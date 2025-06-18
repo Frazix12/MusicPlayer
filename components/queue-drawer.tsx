@@ -74,8 +74,13 @@ export function QueueDrawer() {
                                                         alt={`${song.title} album art`}
                                                         fill
                                                         className="rounded object-cover"
-                                                        sizes="48px"
-                                                        priority={index < 3} // Prioritize loading first few images
+                                                        sizes="(max-width: 768px) 48px, 48px"
+                                                        loading={
+                                                            index < 3
+                                                                ? "eager"
+                                                                : "lazy"
+                                                        }
+                                                        quality={75} // Good balance between quality and size
                                                     />
                                                 </div>
                                             ) : (

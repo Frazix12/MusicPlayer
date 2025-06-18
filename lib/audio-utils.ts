@@ -1,33 +1,57 @@
-import * as musicMetadata from "music-metadata-browser";
-import { Song, LyricLine } from "./store";
+// Types
+export interface LyricLine {
+    time: number;
+    text: string;
+    translation?: string;
+}
+
+export interface Song {
+    id: string;
+    title: string;
+    artist: string;
+    album?: string;
+    duration: number;
+    file: File;
+    audioUrl: string;
+    albumArt?: string;
+    lyrics: LyricLine[];
+}
+
 // @ts-ignore
 import { SyncLyrics } from "@stef-0012/synclyrics";
+import * as musicMetadata from "music-metadata-browser";
 
 // Configure SyncLyrics with CORS proxy
 const corsProxy = "https://corsproxy.io/?";
-const lyricsManager = new SyncLyrics({
-    cache: new Map(),
-    logLevel: "none",
-    sources: ["lrclib", "netease"], // Temporarily remove musixmatch due to CORS
-    instrumentalLyricsIndicator: "",
-});
 
-// Add custom fetch function to handle CORS
-const fetchWithCORS = async (url: string, options: RequestInit = {}) => {
-    try {
-        const proxyUrl = `${corsProxy}${encodeURIComponent(url)}`;
-        const response = await fetch(proxyUrl, {
-            ...options,
-            headers: {
-                ...options.headers,
-                Origin: window.location.origin,
-            },
-        });
-        return response;
-    } catch (error) {
-        console.error("Error with CORS proxy:", error);
-        throw error;
+// Utility function for CORS-enabled fetching
+const fetchWithCORS = async (url: string) => {
+    const response = await fetch(`${corsProxy}${encodeURIComponent(url)}`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return response;
+};
+
+// Lazy initialize the lyrics manager
+let lyricsManagerInstance: InstanceType<typeof SyncLyrics> | null = null;
+const getLyricsManager = () => {
+    if (!lyricsManagerInstance) {
+        lyricsManagerInstance = new SyncLyrics({
+            cache: new Map(),
+            logLevel: "none",
+            sources: ["lrclib", "netease"],
+            instrumentalLyricsIndicator: "",
+        });
+    }
+    return lyricsManagerInstance;
+};
+
+// Memory-efficient blob URL management
+const blobUrls = new Set<string>();
+export const cleanupBlobUrls = () => {
+    blobUrls.forEach(URL.revokeObjectURL);
+    blobUrls.clear();
 };
 
 export interface ParsedMetadata {
@@ -69,12 +93,14 @@ export async function parseAudioMetadata(file: File): Promise<ParsedMetadata> {
 
 export function createSongFromFile(file: File, metadata: ParsedMetadata): Song {
     const audioUrl = URL.createObjectURL(file);
+    blobUrls.add(audioUrl); // Track for cleanup
     const id = `${file.name}-${Date.now()}`;
 
     let albumArt: string | undefined;
     if (metadata.picture) {
         const blob = new Blob([metadata.picture], { type: "image/jpeg" });
         albumArt = URL.createObjectURL(blob);
+        blobUrls.add(albumArt); // Track for cleanup
     }
 
     return {
@@ -210,6 +236,7 @@ export async function fetchLyrics(
         ];
 
         let result = null;
+        const lyricsManager = getLyricsManager();
 
         for (const strategy of searchStrategies) {
             try {

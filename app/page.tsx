@@ -8,8 +8,12 @@ import { Controls } from "@/components/controls";
 import { Lyrics } from "@/components/lyrics";
 import { UploadDialog } from "@/components/upload-dialog";
 import { QueueDrawer } from "@/components/queue-drawer";
+import { useKeyboardControls } from "@/hooks/use-keyboard-controls";
 
 export default function Home() {
+    // Initialize keyboard controls
+    useKeyboardControls();
+
     return (
         <div className="min-h-screen bg-background">
             <TopBar />

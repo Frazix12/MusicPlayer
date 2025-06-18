@@ -104,29 +104,33 @@ function parseLRCTime(timeStr: string): number {
 
     const minutes = parseInt(match[1], 10);
     const seconds = parseInt(match[2], 10);
-    const milliseconds = match[3] ? parseInt(match[3].padEnd(3, '0'), 10) : 0;
+    const milliseconds = match[3] ? parseInt(match[3].padEnd(3, "0"), 10) : 0;
 
     return minutes * 60 + seconds + milliseconds / 1000;
 }
 
 // Enhanced timing validation and correction
-function validateAndCorrectTiming(lyrics: LyricLine[], songDuration: number): LyricLine[] {
+function validateAndCorrectTiming(
+    lyrics: LyricLine[],
+    songDuration: number
+): LyricLine[] {
     if (!lyrics.length) return lyrics;
 
     // Sort by time to ensure proper order
     const sortedLyrics = [...lyrics].sort((a, b) => a.time - b.time);
-    
+
     // Remove duplicates and empty lines
     const cleanedLyrics = sortedLyrics.filter((line, index, arr) => {
         if (!line.text.trim()) return false;
-        if (index > 0 && Math.abs(line.time - arr[index - 1].time) < 0.1) return false;
+        if (index > 0 && Math.abs(line.time - arr[index - 1].time) < 0.1)
+            return false;
         return true;
     });
 
     // Validate timing bounds
-    const validatedLyrics = cleanedLyrics.map(line => ({
+    const validatedLyrics = cleanedLyrics.map((line) => ({
         ...line,
-        time: Math.max(0, Math.min(line.time, songDuration))
+        time: Math.max(0, Math.min(line.time, songDuration)),
     }));
 
     // Check for timing gaps and adjust if necessary
@@ -135,12 +139,12 @@ function validateAndCorrectTiming(lyrics: LyricLine[], songDuration: number): Ly
         if (index > 0) {
             const prevLine = arr[index - 1];
             const gap = line.time - prevLine.time;
-            
+
             // If gap is too small (less than 1 second), adjust slightly
             if (gap < 1 && gap > 0) {
                 return {
                     ...line,
-                    time: prevLine.time + 1
+                    time: prevLine.time + 1,
                 };
             }
         }
@@ -151,33 +155,39 @@ function validateAndCorrectTiming(lyrics: LyricLine[], songDuration: number): Ly
 }
 
 // Improved timing distribution for plain lyrics
-function distributeLyricTiming(lyrics: LyricLine[], totalDuration: number = 240): LyricLine[] {
+function distributeLyricTiming(
+    lyrics: LyricLine[],
+    totalDuration: number = 240
+): LyricLine[] {
     if (!lyrics.length) return lyrics;
 
     // Check if lyrics already have good timing
     const hasValidTiming = lyrics.some((line) => line.time > 1);
-    const hasVariedTiming = lyrics.length > 1 && 
-        Math.max(...lyrics.map(l => l.time)) - Math.min(...lyrics.map(l => l.time)) > 10;
+    const hasVariedTiming =
+        lyrics.length > 1 &&
+        Math.max(...lyrics.map((l) => l.time)) -
+            Math.min(...lyrics.map((l) => l.time)) >
+            10;
 
     if (hasValidTiming && hasVariedTiming) {
         return validateAndCorrectTiming(lyrics, totalDuration);
     }
 
     console.log("Redistributing lyric timing over duration:", totalDuration);
-    
+
     // More sophisticated distribution
     const startTime = totalDuration * 0.05; // Start at 5% of song
-    const endTime = totalDuration * 0.9;    // End at 90% of song
+    const endTime = totalDuration * 0.9; // End at 90% of song
     const availableTime = endTime - startTime;
-    
+
     return lyrics.map((line, index) => {
         // Use exponential distribution for more natural spacing
         const progress = index / (lyrics.length - 1 || 1);
         const adjustedProgress = Math.pow(progress, 0.8); // Slight curve for more natural feel
-        
+
         return {
             text: line.text,
-            time: startTime + (adjustedProgress * availableTime),
+            time: startTime + adjustedProgress * availableTime,
         };
     });
 }
@@ -194,9 +204,9 @@ export async function fetchLyrics(
         // Try multiple search strategies
         const searchStrategies = [
             { track: title, artist },
-            { track: title.split('(')[0].trim(), artist }, // Remove parenthetical info
-            { track: title.split('-')[0].trim(), artist }, // Remove dash info
-            { track: title, artist: artist?.split('feat')[0].trim() }, // Remove featuring info
+            { track: title.split("(")[0].trim(), artist }, // Remove parenthetical info
+            { track: title.split("-")[0].trim(), artist }, // Remove dash info
+            { track: title, artist: artist?.split("feat")[0].trim() }, // Remove featuring info
         ];
 
         let result = null;
@@ -208,7 +218,10 @@ export async function fetchLyrics(
                     length: songDuration ? songDuration * 1000 : undefined,
                 });
 
-                if (result?.lyrics?.lineSynced?.lyrics || result?.lyrics?.plain?.lyrics) {
+                if (
+                    result?.lyrics?.lineSynced?.lyrics ||
+                    result?.lyrics?.plain?.lyrics
+                ) {
                     console.log("Found lyrics with strategy:", strategy);
                     break;
                 }
@@ -219,7 +232,10 @@ export async function fetchLyrics(
         }
 
         // Fallback to direct API search
-        if (!result?.lyrics?.lineSynced?.lyrics && !result?.lyrics?.plain?.lyrics) {
+        if (
+            !result?.lyrics?.lineSynced?.lyrics &&
+            !result?.lyrics?.plain?.lyrics
+        ) {
             try {
                 const searchUrl = `https://lrclib.net/api/search?track_name=${encodeURIComponent(
                     title
@@ -231,9 +247,10 @@ export async function fetchLyrics(
                     // Find best match based on duration if available
                     let bestMatch = searchResults[0];
                     if (songDuration) {
-                        bestMatch = searchResults.find(r => 
-                            Math.abs(r.duration - songDuration) < 10
-                        ) || searchResults[0];
+                        bestMatch =
+                            searchResults.find(
+                                (r) => Math.abs(r.duration - songDuration) < 10
+                            ) || searchResults[0];
                     }
 
                     if (bestMatch.syncedLyrics) {
@@ -279,25 +296,32 @@ export async function fetchLyrics(
         if (result?.lyrics?.lineSynced?.lyrics) {
             const lrcLines = result.lyrics.lineSynced.lyrics.split("\n");
             let parsedLines = lrcLines
-                .map((line) => {
+                .map((line: string) => {
                     // Support multiple time formats
-                    const timeMatch = line.match(/^\[(\d{1,2}:\d{2}\.?\d{0,3})\](.*)/);
+                    const timeMatch = line.match(
+                        /^\[(\d{1,2}:\d{2}\.?\d{0,3})\](.*)/
+                    );
                     if (!timeMatch) return null;
-                    
+
                     const text = timeMatch[2].trim();
                     if (!text) return null;
-                    
+
                     return {
                         time: parseLRCTime(`[${timeMatch[1]}]`),
                         text,
                     };
                 })
-                .filter((line): line is LyricLine => line !== null);
+                .filter(
+                    (line: LyricLine | null): line is LyricLine => line !== null
+                );
 
             console.log("Parsed line-synced lyrics:", parsedLines);
 
             if (parsedLines.length > 0) {
-                const validatedLyrics = validateAndCorrectTiming(parsedLines, songDuration || 300);
+                const validatedLyrics = validateAndCorrectTiming(
+                    parsedLines,
+                    songDuration || 300
+                );
                 return validatedLyrics;
             }
         }
@@ -306,13 +330,16 @@ export async function fetchLyrics(
         if (result?.lyrics?.wordSynced?.lyrics?.length) {
             console.log("Using word-synced lyrics");
             let wordSyncedLines = result.lyrics.wordSynced.lyrics
-                .map((line) => ({
+                .map((line: { start: number; lyric: string }) => ({
                     time: line.start / 1000, // Convert from ms to seconds
                     text: line.lyric.trim(),
                 }))
-                .filter((line) => line.text);
+                .filter((line: LyricLine) => line.text);
 
-            const validatedLyrics = validateAndCorrectTiming(wordSyncedLines, songDuration || 300);
+            const validatedLyrics = validateAndCorrectTiming(
+                wordSyncedLines,
+                songDuration || 300
+            );
             console.log("Processed word-synced lyrics:", validatedLyrics);
             return validatedLyrics;
         }
@@ -322,14 +349,20 @@ export async function fetchLyrics(
             console.log("Using plain lyrics");
             const lines = result.lyrics.plain.lyrics
                 .split("\n")
-                .filter((text) => text.trim())
-                .map((text, i) => ({
+                .filter((text: string) => text.trim())
+                .map((text: string, i: number) => ({
                     time: 0, // Will be distributed
                     text: text.trim(),
                 }));
 
-            const distributedLyrics = distributeLyricTiming(lines, songDuration || 240);
-            console.log("Generated timing for plain lyrics:", distributedLyrics);
+            const distributedLyrics = distributeLyricTiming(
+                lines,
+                songDuration || 240
+            );
+            console.log(
+                "Generated timing for plain lyrics:",
+                distributedLyrics
+            );
             return distributedLyrics;
         }
 
@@ -358,19 +391,22 @@ export function getCurrentLyricIndex(
     for (let i = lyrics.length - 1; i >= 0; i--) {
         const currentLine = lyrics[i];
         const nextLine = lyrics[i + 1];
-        
+
         // Check if we're in the time window for this lyric
         if (adjustedTime >= currentLine.time) {
             // If this is the last lyric, show it for a reasonable duration
             if (!nextLine) {
-                const showDuration = Math.min(30, (lyrics[i].text.length / 10) + 5);
+                const showDuration = Math.min(
+                    30,
+                    lyrics[i].text.length / 10 + 5
+                );
                 if (currentTime <= currentLine.time + showDuration) {
                     console.log("Showing last lyric at index:", i);
                     return i;
                 }
                 break;
             }
-            
+
             // Show this lyric until the next one starts (with small overlap)
             if (adjustedTime < nextLine.time + 0.5) {
                 console.log("Showing lyric index:", i);
@@ -402,64 +438,85 @@ export function adjustLyricTiming(
     adjustments: { index: number; newTime: number }[]
 ): LyricLine[] {
     const adjustedLyrics = [...lyrics];
-    
+
     adjustments.forEach(({ index, newTime }) => {
         if (index >= 0 && index < adjustedLyrics.length) {
             adjustedLyrics[index] = {
                 ...adjustedLyrics[index],
-                time: Math.max(0, newTime)
+                time: Math.max(0, newTime),
             };
         }
     });
-    
+
     // Re-sort and validate after manual adjustments
     return adjustedLyrics.sort((a, b) => a.time - b.time);
 }
 
 // Utility to detect and fix common timing issues
-export function detectTimingIssues(lyrics: LyricLine[], songDuration: number): {
+export function detectTimingIssues(
+    lyrics: LyricLine[],
+    songDuration: number
+): {
     issues: string[];
-    suggestions: { index: number; currentTime: number; suggestedTime: number; reason: string }[];
+    suggestions: {
+        index: number;
+        currentTime: number;
+        suggestedTime: number;
+        reason: string;
+    }[];
 } {
     const issues: string[] = [];
-    const suggestions: { index: number; currentTime: number; suggestedTime: number; reason: string }[] = [];
-    
+    const suggestions: {
+        index: number;
+        currentTime: number;
+        suggestedTime: number;
+        reason: string;
+    }[] = [];
+
     if (!lyrics.length) return { issues, suggestions };
-    
+
     // Check for lyrics starting too early
     if (lyrics[0].time < 5) {
-        issues.push("First lyric starts very early - might be before vocals begin");
+        issues.push(
+            "First lyric starts very early - might be before vocals begin"
+        );
         suggestions.push({
             index: 0,
             currentTime: lyrics[0].time,
             suggestedTime: 8,
-            reason: "Move first lyric to after typical intro"
+            reason: "Move first lyric to after typical intro",
         });
     }
-    
+
     // Check for lyrics ending too early
     const lastLyric = lyrics[lyrics.length - 1];
     if (lastLyric.time < songDuration * 0.7) {
-        issues.push("Lyrics end much earlier than song - might be missing verses");
+        issues.push(
+            "Lyrics end much earlier than song - might be missing verses"
+        );
     }
-    
+
     // Check for timing gaps that are too large or too small
     for (let i = 1; i < lyrics.length; i++) {
         const gap = lyrics[i].time - lyrics[i - 1].time;
-        
+
         if (gap < 0.5) {
             issues.push(`Lines ${i - 1} and ${i} are too close together`);
             suggestions.push({
                 index: i,
                 currentTime: lyrics[i].time,
                 suggestedTime: lyrics[i - 1].time + 2,
-                reason: "Add minimum gap between lines"
+                reason: "Add minimum gap between lines",
             });
         } else if (gap > 30) {
-            issues.push(`Large gap between lines ${i - 1} and ${i} - might be missing lyrics`);
+            issues.push(
+                `Large gap between lines ${
+                    i - 1
+                } and ${i} - might be missing lyrics`
+            );
         }
     }
-    
+
     return { issues, suggestions };
 }
 

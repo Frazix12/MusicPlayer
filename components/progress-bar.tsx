@@ -112,7 +112,7 @@ export function ProgressBar() {
         if (timeDiff > 0.5) {
             seekingRef.current = true;
             audioRef.current.currentTime = currentTime;
-            
+
             // Reset seeking flag after a short delay
             setTimeout(() => {
                 seekingRef.current = false;
@@ -124,19 +124,17 @@ export function ProgressBar() {
         const newTime = value[0];
         seekingRef.current = true;
         setCurrentTime(newTime);
-        
+
         // Reset seeking flag after a short delay
         setTimeout(() => {
             seekingRef.current = false;
         }, 100);
-    };
-
-    // Expose audio element to global scope for lyrics interaction
+    }; // Expose audio element to global scope for lyrics interaction
     useEffect(() => {
         if (audioRef.current) {
             (window as any).audioElement = audioRef.current;
         }
-    }, [audioRef.current]);
+    }, []);
 
     if (!currentSong) return null;
 

@@ -53,6 +53,7 @@ interface PlayerState {
     setShowLyrics: (show: boolean) => void;
     playFromQueue: (index: number) => void;
     setIsPlaying: (playing: boolean) => void;
+    seekToTime: (time: number) => void; // New action for seeking
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -84,6 +85,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     setVolume: (volume) => set({ volume: Math.max(0, Math.min(1, volume)) }),
 
     setIsPlaying: (playing) => set({ isPlaying: playing }),
+
+    // New seek action for lyrics interaction
+    seekToTime: (time) => set({ 
+        currentTime: time,
+        isPlaying: true // Auto-play when seeking from lyrics
+    }),
 
     addToQueue: (songs) =>
         set((state) => {

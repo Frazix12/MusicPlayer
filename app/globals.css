@@ -95,3 +95,112 @@
     cursor: pointer !important;
   }
 }
+
+/* Interactive lyrics styles */
+@layer components {
+  .lyrics-line {
+    @apply transition-all duration-300 ease-in-out;
+    @apply hover:bg-muted/20 hover:scale-[1.02];
+    @apply active:scale-[0.98];
+    @apply cursor-pointer select-none;
+    @apply relative overflow-hidden;
+  }
+  
+  .lyrics-line::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent;
+    @apply opacity-0 transition-opacity duration-300;
+    @apply translate-x-[-100%];
+  }
+  
+  .lyrics-line:hover::before {
+    @apply opacity-100;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  
+  .lyrics-current {
+    @apply relative;
+  }
+  
+  .lyrics-current::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10;
+    @apply animate-pulse;
+    @apply rounded-lg;
+  }
+}
+
+/* Shimmer animation for hover effect */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Smooth scrolling for lyrics container */
+@layer utilities {
+  .lyrics-scroll {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+  
+  .lyrics-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .lyrics-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .lyrics-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  
+  .lyrics-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* Responsive text sizing for lyrics */
+@layer utilities {
+  .lyrics-text {
+    @apply text-lg leading-relaxed;
+  }
+  
+  @screen sm {
+    .lyrics-text {
+      @apply text-xl leading-relaxed;
+    }
+  }
+  
+  @screen md {
+    .lyrics-text {
+      @apply text-2xl leading-relaxed;
+    }
+  }
+  
+  @screen lg {
+    .lyrics-text {
+      @apply text-3xl leading-relaxed;
+    }
+  }
+}
+
+/* Touch-friendly tap targets */
+@layer utilities {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Focus styles for accessibility */
+@layer utilities {
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+}

@@ -16,14 +16,16 @@ export function ProgressBar() {
         volume,
         nextSong,
         repeat,
+        seekToTime,
     } = usePlayerStore();
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentSongIdRef = useRef<string | null>(null);
+    const seekingRef = useRef(false);
 
     // Define stable function references using useCallback
     const updateTime = useCallback(() => {
-        if (audioRef.current) {
+        if (audioRef.current && !seekingRef.current) {
             setCurrentTime(audioRef.current.currentTime);
         }
     }, [setCurrentTime]);
@@ -100,7 +102,7 @@ export function ProgressBar() {
         audioRef.current.volume = volume;
     }, [volume]);
 
-    // Handle seeking
+    // Handle seeking from store (for lyrics interaction)
     useEffect(() => {
         if (!audioRef.current) return;
 
@@ -108,14 +110,33 @@ export function ProgressBar() {
         // This prevents feedback loops
         const timeDiff = Math.abs(audioRef.current.currentTime - currentTime);
         if (timeDiff > 0.5) {
+            seekingRef.current = true;
             audioRef.current.currentTime = currentTime;
+            
+            // Reset seeking flag after a short delay
+            setTimeout(() => {
+                seekingRef.current = false;
+            }, 100);
         }
     }, [currentTime]);
 
     const handleSeek = (value: number[]) => {
         const newTime = value[0];
+        seekingRef.current = true;
         setCurrentTime(newTime);
+        
+        // Reset seeking flag after a short delay
+        setTimeout(() => {
+            seekingRef.current = false;
+        }, 100);
     };
+
+    // Expose audio element to global scope for lyrics interaction
+    useEffect(() => {
+        if (audioRef.current) {
+            (window as any).audioElement = audioRef.current;
+        }
+    }, [audioRef.current]);
 
     if (!currentSong) return null;
 

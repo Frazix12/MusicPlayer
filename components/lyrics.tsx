@@ -266,20 +266,19 @@ export function Lyrics() {
 
     return (
         <motion.div
-            className="flex-1 p-6 h-full overflow-visible"
+            className="flex-1 p-6 h-full overflow-visible bg-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            {/* Card removed to allow glow to extend */}
-            <div className="h-full w-full flex flex-col bg-transparent shadow-none border-none overflow-visible">
+            <div className="h-full w-full flex flex-col bg-transparent shadow-none border border-primary-300 rounded-2xl overflow-visible p-8">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                         <Music className="h-5 w-5 text-primary" />
-                        <h3 className="text-lg font-semibold">
+                        <h3 className="text-sm  font-semibold">
                             Interactive Lyrics
                         </h3>
-                        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                        <span className="text-xs text-muted-foreground bg-secondary-300 px-2 py-1 rounded-full">
                             Click to jump
                         </span>
                     </div>
@@ -347,10 +346,10 @@ export function Lyrics() {
                 </AnimatePresence>
 
                 <ScrollArea
-                    className="flex-1 h-full w-full flex items-center justify-center py-8 overflow-visible"
+                    className="flex-1 h-full w-full flex items-center justify-center overflow-hidden bg-transparent"
                     ref={scrollRef}
                 >
-                    <div className="flex flex-col items-center justify-center w-full h-full space-y-2 overflow-visible">
+                    <div className="flex flex-col items-center justify-center w-full h-full space-y-2 overflow-visible bg-transparent px-8">
                         {lyrics.map((line, index) => {
                             const isCurrentLine = index === currentLyricIndex;
                             const isPastLine = index < currentLyricIndex;
@@ -379,6 +378,19 @@ export function Lyrics() {
                                                 : ""
                                         }
                                     `}
+                                    style={{
+                                        filter: isCurrentLine
+                                            ? "drop-shadow(0 0 16px var(--primary-300)) drop-shadow(0 0 32px var(--primary-500))"
+                                            : isHovered
+                                            ? "drop-shadow(0 0 8px var(--primary-300))"
+                                            : undefined,
+                                        textShadow: isCurrentLine
+                                            ? "0 0 20px var(--primary-300), 0 0 40px var(--primary-500)"
+                                            : isHovered
+                                            ? "0 0 12px var(--primary-300)"
+                                            : undefined,
+                                        zIndex: isCurrentLine ? 20 : 10,
+                                    }}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{
                                         opacity: isCurrentLine
@@ -400,19 +412,6 @@ export function Lyrics() {
                                         type: "spring",
                                         stiffness: 100,
                                         damping: 15,
-                                    }}
-                                    style={{
-                                        filter: isCurrentLine
-                                            ? "drop-shadow(0 0 32px var(--primary-300)) drop-shadow(0 0 64px var(--primary-500)) drop-shadow(0 0 128px var(--primary-500))"
-                                            : isHovered
-                                            ? "drop-shadow(0 0 16px var(--primary-300))"
-                                            : undefined,
-                                        textShadow: isCurrentLine
-                                            ? "0 0 40px var(--primary-300), 0 0 80px var(--primary-500), 0 0 160px var(--primary-500)"
-                                            : isHovered
-                                            ? "0 0 24px var(--primary-300)"
-                                            : undefined,
-                                        zIndex: isCurrentLine ? 20 : 10,
                                     }}
                                     onClick={() =>
                                         handleLyricClick(line, index)

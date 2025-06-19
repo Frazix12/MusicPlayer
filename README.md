@@ -18,7 +18,7 @@ This project showcases the power of AI-assisted development, being built entirel
 
 -   Audio file upload and playback
 -   Play/Pause/Skip controls
--   Progress bar with seek functionality
+-   Progress bar with seek functionality and smooth animated seeking
 -   Volume control
 -   Shuffle and repeat modes (none/one/all)
 -   Queue management
@@ -28,16 +28,19 @@ This project showcases the power of AI-assisted development, being built entirel
 -   Automatic lyrics fetching from multiple sources
 -   Line-synced lyrics display
 -   Smooth animations and highlighting
+-   Subtle glowing effect on current lyric line
 -   Fallback to plain lyrics when sync not available
 -   Auto-scroll with manual scroll override
 
 ### UI/UX
 
 -   Modern, clean interface
+-   Unified color palette using Tailwind CSS custom colors
+-   JetBrains Mono as the default site font
 -   Dark/Light theme support
 -   Responsive design
 -   Beautiful transitions and animations
--   Album art display
+-   Album art display with consistent border and color
 -   Queue drawer
 -   Upload dialog
 -   Toast notifications
@@ -56,8 +59,8 @@ This project showcases the power of AI-assisted development, being built entirel
 
 ### Styling
 
--   Tailwind CSS
--   Shadcn/ui
+-   Tailwind CSS with custom color palette (primary, secondary, accent, etc.)
+-   JetBrains Mono font
 -   CSS Variables for theming
 -   Framer Motion for animations
 

@@ -89,7 +89,7 @@ export function Controls() {
                     variant="default"
                     size="lg"
                     onClick={togglePlay}
-                    className="bg-primary-300 text-primary-foreground shadow-lg border-0 hover:bg-primary-400 hover:scale-105 transition-all duration-200"
+                    className="bg-primary-300 text-primary-foreground shadow-lg border-0 hover:bg-primary-400 transition-all duration-200"
                 >
                     <div className="relative z-20 flex items-center justify-center">
                         {isPlaying ? (

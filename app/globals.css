@@ -196,11 +196,6 @@
     * {
         @apply border-border;
     }
-    body {
-        /* Use explicit background and text color utilities from the new palette */
-        background-color: var(--background-900);
-        color: var(--text-900);
-    }
 }
 
 /* Custom slider cursor styles */

@@ -31,8 +31,8 @@ export function TopBar() {
                     onClick={() => setShowUpload(true)}
                     className="hover:bg-primary/10 transition-colors"
                 >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload
+                    <Upload className="h-4 w-4 mr-0 sm:mr-2" />
+                    <span className="hidden sm:inline">Upload</span>
                 </Button>
 
                 <Button
@@ -41,8 +41,10 @@ export function TopBar() {
                     onClick={() => setShowQueue(true)}
                     className="hover:bg-primary/10 transition-colors"
                 >
-                    <ListMusic className="h-4 w-4 mr-2" />
-                    Queue ({queue.length})
+                    <ListMusic className="h-4 w-4 mr-0 sm:mr-2" />
+                    <span className="hidden sm:inline">
+                        Queue ({queue.length})
+                    </span>
                 </Button>
 
                 <Button

@@ -28,12 +28,12 @@ export function Player() {
 
     return (
         <motion.div
-            className="flex flex-col items-center p-6"
+            className="flex flex-col items-center p-2 sm:p-6"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Card className="w-64 h-64 mb-6 overflow-hidden bg-gradient-to-br from-primary-300 to-primary-100 border-primary-300 rounded-2xl shadow-2xl">
+            <Card className="w-44 h-44 sm:w-64 sm:h-64 mb-4 sm:mb-6 overflow-hidden bg-gradient-to-br from-primary-300 to-primary-100 border-primary-300 rounded-2xl shadow-2xl">
                 {currentSong.albumArt ? (
                     <motion.img
                         src={currentSong.albumArt}
@@ -50,12 +50,12 @@ export function Player() {
             </Card>
 
             <motion.div
-                className="text-center max-w-sm"
+                className="text-center max-w-xs sm:max-w-sm"
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
             >
-                <h2 className="text-2xl font-bold mb-2 truncate">
+                <h2 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2 truncate">
                     {currentSong.title}
                 </h2>
                 <p className="text-lg text-muted-foreground truncate">

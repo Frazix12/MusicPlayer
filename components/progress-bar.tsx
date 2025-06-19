@@ -154,7 +154,7 @@ export function ProgressBar() {
                     max={duration}
                     step={0.1}
                     onValueChange={handleSeek}
-                    className="w-full cursor-pointer [&_[role=slider]]:bg-gradient-to-r [&_[role=slider]]:from-primary-500 [&_[role=slider]]:to-secondary-500 [&_[role=slider]]:border-0 [&_[role=slider]]:shadow-lg [&_[role=slider]]:cursor-pointer [&_[role=slider]]:w-5 [&_[role=slider]]:h-5 [&_.relative]:cursor-pointer [&_[data-orientation=horizontal]]:cursor-pointer hover:[&_[role=slider]]:scale-110 [&_[role=slider]]:transition-transform"
+                    className="w-full cursor-pointer [&_[role=slider]]:rounded-sm [&_[role=slider]]:animation-spin-slow [&_[role=slider]]:bg-gradient-to-r [&_[role=slider]]:from-primary-500 [&_[role=slider]]:to-secondary-500 [&_[role=slider]]:border-0 [&_[role=slider]]:shadow-lg [&_[role=slider]]:cursor-pointer [&_[role=slider]]:w-5 [&_[role=slider]]:h-5 [&_.relative]:cursor-pointer [&_[data-orientation=horizontal]]:cursor-pointer hover:[&_[role=slider]]:scale-110 [&_[role=slider]]:transition-transform"
                 />
             </div>
 

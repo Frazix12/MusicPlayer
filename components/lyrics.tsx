@@ -266,19 +266,19 @@ export function Lyrics() {
 
     return (
         <motion.div
-            className="flex-1 p-6 h-full overflow-visible bg-transparent"
+            className="flex-1 p-2 sm:p-6 h-full overflow-visible bg-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <div className="h-full w-full flex flex-col bg-transparent shadow-none border border-primary-300 rounded-2xl overflow-visible p-8">
-                <div className="flex items-center justify-between mb-4">
+            <div className="h-full w-full flex flex-col bg-transparent shadow-none border border-primary-300 rounded-2xl overflow-visible p-2 sm:p-8">
+                <div className="flex items-center justify-between mb-2 sm:mb-4">
                     <div className="flex items-center gap-2">
                         <Music className="h-5 w-5 text-primary" />
-                        <h3 className="text-sm  font-semibold">
-                            Interactive Lyrics
+                        <h3 className="text-lg sm:text-xl font-semibold">
+                            Lyrics
                         </h3>
-                        <span className="text-xs text-muted-foreground bg-secondary-300 px-2 py-1 rounded-full">
+                        <span className="text-xs text-muted-foreground bg-secondary-300 px-2 py-1 rounded-full hidden sm:inline">
                             Click to jump
                         </span>
                     </div>
@@ -349,7 +349,7 @@ export function Lyrics() {
                     className="flex-1 h-full w-full flex items-center justify-center overflow-hidden bg-transparent"
                     ref={scrollRef}
                 >
-                    <div className="flex flex-col items-center justify-center w-full h-full space-y-2 overflow-visible bg-transparent px-8">
+                    <div className="flex flex-col items-center justify-center w-full h-full space-y-1 sm:space-y-2 overflow-visible bg-transparent px-2 sm:px-8">
                         {lyrics.map((line, index) => {
                             const isCurrentLine = index === currentLyricIndex;
                             const isPastLine = index < currentLyricIndex;

@@ -22,7 +22,13 @@ export default function RootLayout({
 
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={jetBrainsMono.className} suppressHydrationWarning>
+            <body
+                className={
+                    jetBrainsMono.className +
+                    " bg-background-50 text-text-900 dark:bg-background-900 dark:text-text-50"
+                }
+                suppressHydrationWarning
+            >
                 {mounted ? (
                     <ThemeProvider
                         attribute="class"

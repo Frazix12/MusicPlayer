@@ -41,76 +41,71 @@ export function Controls() {
 
     return (
         <motion.div
-            className="flex items-center justify-center gap-6 px-6 py-4"
+            className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 px-1 py-2 sm:px-6 sm:py-4"
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
         >
-            {/* Secondary controls - Left */}
-            <div className="flex items-center gap-2">
+            {/* Repeat button - Left */}
+            <div className="flex items-center gap-1 sm:gap-2">
                 <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
+                    className="h-8 w-8 sm:h-10 sm:w-10 border-primary text-primary transition-colors p-0"
                     onClick={toggleRepeat}
-                    className={`border-primary text-primary transition-colors ${
-                        repeat !== "none"
-                            ? "bg-primary-300"
-                            : "bg-transparent hover:bg-primary-300"
-                    }`}
                 >
-                    <RepeatIcon className="h-4 w-4" />
-                </Button>
-
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={toggleShuffle}
-                    className={`border-primary text-primary transition-colors ${
-                        shuffle
-                            ? "bg-primary-300"
-                            : "bg-transparent hover:bg-primary-300"
-                    }`}
-                >
-                    <Shuffle className="h-4 w-4" />
+                    <RepeatIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
             </div>
 
             {/* Main controls - Center */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 sm:gap-3">
                 <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={prevSong}
-                    className="border-primary text-primary transition-colors bg-transparent hover:bg-primary-300"
+                    className="h-8 w-8 sm:h-10 sm:w-10 border-primary text-primary transition-colors bg-transparent hover:bg-primary-300 p-0"
                 >
-                    <SkipBack className="h-5 w-5" />
+                    <SkipBack className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
                 <Button
                     variant="default"
-                    size="lg"
+                    size="icon"
                     onClick={togglePlay}
-                    className="bg-primary-300 text-primary-foreground shadow-lg border-0 hover:bg-primary-400 transition-all duration-200"
+                    className="bg-primary-300 text-primary-foreground shadow-lg border-0 hover:bg-primary-400 transition-all duration-200 w-12 h-12 sm:w-16 sm:h-16 p-0 flex items-center justify-center rounded-full text-2xl sm:text-3xl"
                 >
                     <div className="relative z-20 flex items-center justify-center">
                         {isPlaying ? (
-                            <Pause className="h-8 w-8" />
+                            <Pause className="h-6 w-6 sm:h-8 sm:w-8" />
                         ) : (
-                            <Play className="h-8 w-8 ml-1" />
+                            <Play className="h-6 w-6 ml-1 sm:h-8 sm:w-8" />
                         )}
                     </div>
                 </Button>
                 <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={nextSong}
-                    className="border-primary text-primary transition-colors bg-transparent hover:bg-primary-300"
+                    className="h-8 w-8 sm:h-10 sm:w-10 border-primary text-primary transition-colors bg-transparent hover:bg-primary-300 p-0"
                 >
-                    <SkipForward className="h-5 w-5" />
+                    <SkipForward className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
             </div>
 
-            {/* Volume control - Right */}
-            <div className="flex items-center gap-3">
+            {/* Shuffle button - Right */}
+            <div className="flex items-center gap-1 sm:gap-2">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleShuffle}
+                    className="h-8 w-8 sm:h-10 sm:w-10 border-primary text-primary transition-colors p-0"
+                >
+                    <Shuffle className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Button>
+            </div>
+
+            {/* Volume control - Right (hidden on mobile) */}
+            <div className="hidden sm:flex items-center gap-3">
                 <Button
                     variant="ghost"
                     size="sm"

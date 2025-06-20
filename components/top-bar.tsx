@@ -26,28 +26,35 @@ export function TopBar() {
 
             <div className="flex items-center gap-2">
                 <Button
+                    asChild
                     variant="outline"
                     size="sm"
                     onClick={() => setShowUpload(true)}
                     className="hover:bg-primary/10 transition-colors"
                 >
-                    <Upload className="h-4 w-4 mr-0 sm:mr-2" />
-                    <span className="hidden sm:inline">Upload</span>
+                    <span>
+                        <Upload className="h-4 w-4 mr-0 sm:mr-2" />
+                        <span className="hidden sm:inline">Upload</span>
+                    </span>
                 </Button>
 
                 <Button
+                    asChild
                     variant="outline"
                     size="sm"
                     onClick={() => setShowQueue(true)}
                     className="hover:bg-primary/10 transition-colors"
                 >
-                    <ListMusic className="h-4 w-4 mr-0 sm:mr-2" />
-                    <span className="hidden sm:inline">
-                        Queue ({queue.length})
+                    <span>
+                        <ListMusic className="h-4 w-4 mr-0 sm:mr-2" />
+                        <span className="hidden sm:inline">
+                            Queue ({queue.length})
+                        </span>
                     </span>
                 </Button>
 
                 <Button
+                    asChild
                     variant="outline"
                     size="sm"
                     onClick={() =>
@@ -55,11 +62,13 @@ export function TopBar() {
                     }
                     className="hover:bg-primary/10 transition-colors"
                 >
-                    {theme === "dark" ? (
-                        <Sun className="h-4 w-4" />
-                    ) : (
-                        <Moon className="h-4 w-4" />
-                    )}
+                    <span>
+                        {theme === "dark" ? (
+                            <Sun className="h-4 w-4" />
+                        ) : (
+                            <Moon className="h-4 w-4" />
+                        )}
+                    </span>
                 </Button>
             </div>
         </motion.header>
